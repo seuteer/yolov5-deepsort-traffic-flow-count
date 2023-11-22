@@ -12,12 +12,19 @@ if __name__ == '__main__':
     # 按车流方向分别绘制两个多边形框，区分下行和上行方向
     video_file = './video/T字路口航拍-2x.mp4'
     polygon_mask_dict = {}
-    color_plate_dict = {}
     color_polygons_image_dict = {}
     dict_overlapping_1_polygon = {}
     dict_overlapping_2_polygon = {}
     dict_overlapping_all = {}
     down_up_dict = {}
+    flow_colors = [
+        (255, 0, 0),  # 红色
+        (0, 255, 0),  # 绿色
+        (0, 0, 255),  # 蓝色
+        (255, 255, 0),  # 黄色
+        (255, 0, 255),  # 紫色
+        (0, 255, 255),  # 青色
+    ]
 
     # 绘制多条流向，统计各个流向的车流量
     flow_list = []
@@ -51,9 +58,8 @@ if __name__ == '__main__':
         polygon_mask = cv2.resize(polygon_mask, (960, 540))
         polygon_mask_dict[flow] = polygon_mask
 
-        color_plate_dict[flow] = [random.randint(0, 255) for _ in range(3)]
-        image_1 = np.array(polygon_value_1 * color_plate_dict[flow], np.uint8)
-        image_2 = np.array(polygon_value_2 * color_plate_dict[flow], np.uint8)
+        image_1 = np.array(polygon_value_1 * flow_colors[len(flow_list)-1], np.uint8)
+        image_2 = np.array(polygon_value_2 * flow_colors[len(flow_list)-1], np.uint8)
 
         # 彩色图片（值范围 0-255）
         color_polygons_image = image_1 + image_2
@@ -211,12 +217,12 @@ if __name__ == '__main__':
         # 文字位置
         font_draw_number = cv2.FONT_HERSHEY_SIMPLEX
         draw_text_postion = [int(960 * 0.01), int(540 * 0.05)]
-        for flow in flow_list:
+        for ind, flow in enumerate(flow_list):
             text_draw = flow + ' DOWN:' + str(down_up_dict[flow + '_down']['total']) + ', UP:' + str(down_up_dict[flow + '_up']['total'])
             output_image_frame = cv2.putText(img=output_image_frame, text=text_draw,
                                              org=draw_text_postion,
                                              fontFace=font_draw_number,
-                                             fontScale=1, color=color_plate_dict[flow], thickness=2)
+                                             fontScale=1, color=flow_colors[ind], thickness=2)
             draw_text_postion[1] += 30
 
         cv2.imshow('demo', output_image_frame)
@@ -226,6 +232,6 @@ if __name__ == '__main__':
     pass
 
     print(flow, down_up_dict)
-    pd.DataFrame(down_up_dict).to_excel(video_file.replace('.mp4', '.xlsx'))
+    pd.DataFrame(down_up_dict).T.to_excel(video_file.replace('.mp4', '.xlsx'))
     capture.release()
     cv2.destroyAllWindows()
