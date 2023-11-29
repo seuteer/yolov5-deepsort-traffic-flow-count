@@ -10,7 +10,7 @@ import pandas as pd
 if __name__ == '__main__':
 
     # 按车流方向分别绘制两个多边形框，区分下行和上行方向
-    video_file = './video/T字路口航拍-2x.mp4'
+    video_file = './video/交叉口-5min-3x.mp4'
     polygon_mask_dict = {}
     color_polygons_image_dict = {}
     dict_overlapping_1_polygon = {}
