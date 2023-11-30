@@ -5,6 +5,7 @@
 - 默认检测类别（'car','truck','bus','van','feright car'）
 - 航拍车辆检测数据源（DroneVehicle）
 
+## 运行main.py
 ![运行效果展示](./readme.jpg)
 
 
